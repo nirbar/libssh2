@@ -191,6 +191,20 @@ if(WIN32)
   list(APPEND SOURCES ${PROJECT_SOURCE_DIR}/win32/libssh2.rc)
 endif()
 
+IF (MSVC)
+	OPTION(STATIC_CRT "Use static CRT libraries" ON)
+	
+	IF(STATIC_CRT)
+		FOREACH(flag_var
+				CMAKE_C_FLAGS CMAKE_C_FLAGS_DEBUG CMAKE_C_FLAGS_RELEASE
+				CMAKE_C_FLAGS_MINSIZEREL CMAKE_C_FLAGS_RELWITHDEBINFO)
+			IF(${flag_var} MATCHES "/MD")
+				STRING(REGEX REPLACE "/MD" "/MT" ${flag_var} "${${flag_var}}")
+			ENDIF(${flag_var} MATCHES "/MD")
+		ENDFOREACH(flag_var)
+	ENDIF()
+ENDIF()
+
 add_library(libssh2 ${SOURCES})
 # we want it to be called libssh2 on all platforms
 set_target_properties(libssh2 PROPERTIES PREFIX "")
