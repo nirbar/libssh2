@@ -42,6 +42,18 @@ set(PROJECT_URL "http://www.libssh2.org/")
 set(PROJECT_DESCRIPTION "The SSH library")
 
 option(BUILD_SHARED_LIBS "Build Shared Libraries" OFF)
+IF (MSVC)
+
+	FOREACH(flag_var
+			CMAKE_C_FLAGS CMAKE_C_FLAGS_DEBUG CMAKE_C_FLAGS_RELEASE
+			CMAKE_C_FLAGS_MINSIZEREL CMAKE_C_FLAGS_RELWITHDEBINFO)
+		IF(${flag_var} MATCHES "/MD")
+			STRING(REGEX REPLACE "/MD" "/MT" ${flag_var} "${${flag_var}}")
+		ENDIF(${flag_var} MATCHES "/MD")
+	ENDFOREACH(flag_var)
+	
+	ADD_DEFINITIONS( "/wd4102 /wd4996"  )
+ENDIF()
 
 # Parse version
 
